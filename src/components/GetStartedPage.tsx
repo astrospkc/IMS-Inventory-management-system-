@@ -2,6 +2,8 @@
 import { House } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import useUserStore from "../store/useUserStore.js"
+import { useNavigate } from "react-router-dom"
 // import { useRouter } from "next/navigation";
 
 export default function GetStartedPage() {
@@ -42,10 +44,30 @@ export default function GetStartedPage() {
 // ---------- LOGIN COMPONENT ----------
 const Login = ({ setChooseOption }: { setChooseOption: (opt: string) => void }) => {
     // const router = useRouter();
+    const navigate = useNavigate()
+    const { loginUser } = useUserStore()
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+        role: 'seller'
+    });
 
-    const handleLogin = (e: React.FormEvent) => {
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        // TODO: Call your API for login here
+        const data = await loginUser(formData)
+        console.log("login data: ", data);
+        if (data) {
+            navigate(formData.role == "seller" ? "/sellerDashboard" : "buyerDashboard")
+
+        }
         // router.push("/dashboard"); // redirect after login success
     };
 
@@ -65,7 +87,9 @@ const Login = ({ setChooseOption }: { setChooseOption: (opt: string) => void }) 
                 <div>
                     <label className="block text-sm mb-2">Email</label>
                     <input
+                        name="email"
                         type="email"
+                        onChange={handleChange}
                         placeholder="you@example.com"
                         className="w-full px-4 py-3 rounded-lg bg-black/40 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-violet-600"
                     />
@@ -73,7 +97,9 @@ const Login = ({ setChooseOption }: { setChooseOption: (opt: string) => void }) 
                 <div>
                     <label className="block text-sm mb-2">Password</label>
                     <input
+                        name="password"
                         type="password"
+                        onChange={handleChange}
                         placeholder="••••••••"
                         className="w-full px-4 py-3 rounded-lg bg-black/40 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-violet-600"
                     />
@@ -82,7 +108,9 @@ const Login = ({ setChooseOption }: { setChooseOption: (opt: string) => void }) 
                     <label className="block text-sm mb-2">Role</label>
                     <select
                         className="w-full px-4 py-3 rounded-lg bg-black/40 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-violet-600"
+                        name="role"
                         defaultValue=""
+                        onChange={handleChange}
                     >
                         <option value="" disabled>
                             Select a role
@@ -115,11 +143,31 @@ const Login = ({ setChooseOption }: { setChooseOption: (opt: string) => void }) 
 
 // ---------- SIGNUP COMPONENT ----------
 const Signup = ({ setChooseOption }: { setChooseOption: (opt: string) => void }) => {
-    const handleSignup = (e: React.FormEvent) => {
+
+    const { createUser } = useUserStore()
+    const navigate = useNavigate()
+
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        role: 'seller'
+    });
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    }
+    const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
-        // TODO: call signup API
-        setChooseOption("signin"); // after signup, go to login
+        await createUser(formData)
+        setChooseOption("signin");// after signup, go to login
+        navigate(formData.role == "seller" ? "/sellerDashboard" : "/buyerDashboard")
+
     };
+
 
     return (
         <>
@@ -138,6 +186,7 @@ const Signup = ({ setChooseOption }: { setChooseOption: (opt: string) => void })
                     <label className="block text-sm mb-2">Name</label>
                     <input
                         type="text"
+                        onChange={handleChange}
                         placeholder="Your Name"
                         className="w-full px-4 py-3 rounded-lg bg-black/40 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-violet-600"
                     />
@@ -146,6 +195,7 @@ const Signup = ({ setChooseOption }: { setChooseOption: (opt: string) => void })
                     <label className="block text-sm mb-2">Email</label>
                     <input
                         type="email"
+                        onChange={handleChange}
                         placeholder="you@example.com"
                         className="w-full px-4 py-3 rounded-lg bg-black/40 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-violet-600"
                     />
@@ -154,6 +204,7 @@ const Signup = ({ setChooseOption }: { setChooseOption: (opt: string) => void })
                     <label className="block text-sm mb-2">Password</label>
                     <input
                         type="password"
+                        onChange={handleChange}
                         placeholder="••••••••"
                         className="w-full px-4 py-3 rounded-lg bg-black/40 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-violet-600"
                     />
@@ -164,6 +215,7 @@ const Signup = ({ setChooseOption }: { setChooseOption: (opt: string) => void })
                     <select
                         className="w-full px-4 py-3 rounded-lg bg-black/40 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-violet-600"
                         defaultValue=""
+                        onChange={handleChange}
                     >
                         <option value="" disabled>
                             Select a role

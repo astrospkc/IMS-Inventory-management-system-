@@ -1,73 +1,74 @@
-# React + TypeScript + Vite
+# 📦 Inventory Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An advanced **Inventory Management System** built with **React**, **Tailwind CSS**, **React Query**, **Recharts**, and a **Node.js + PostgreSQL backend**.  
+This system helps sellers manage their products efficiently with **charts**, **search**, **add/edit/delete functionality**, and **paginated product lists**, all wrapped in a modern, responsive UI.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📝 Description
 
-## React Compiler
+The Inventory Management System allows businesses to manage their stock and product data seamlessly.  
+Admins or sellers can view product details in both **tabular** and **graphical** formats, search/filter through products, and perform essential CRUD operations in real-time.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The dashboard provides insights like **category-wise stock distribution**, **price charts**, and **availability status**, making inventory tracking smarter and faster.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## ✨ Features
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- 📊 **Charts & Graphs**  
+  - Category-wise stock distribution using Pie Charts  
+  - Product price distribution using Bar Charts  
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- 🧾 **Product Management**  
+  - View product list with real-time updates  
+  - **Search** by product name, brand, or category  
+  - **Add new products** using a modal form  
+  - **Edit existing products** inline  
+  - **Delete products** with instant UI updates  
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- 🔄 **Pagination Support**  
+  - Handles large product lists efficiently  
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- 🌐 **Authentication-aware Navbar**  
+  - Transparent navbar that blurs on scroll-up  
+  - Login / Logout toggle integrated with store  
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- 🧠 **State Management & Data Fetching**  
+  - Zustand for global store  
+  - React Query for async data fetching, caching, and mutation  
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- 🎨 **Modern UI**  
+  - Tailwind CSS  
+  - Responsive layouts  
+  - Dark gradient backgrounds for a professional dashboard look
+
+---
+
+## 🛠️ Tech Stack
+
+### **Frontend**
+- React (Vite)
+- Tailwind CSS
+- Zustand (for global state)
+- React Query (data fetching)
+- Recharts (charts)
+- Lucide React (icons)
+
+### **Backend**
+- Node.js / Express.js
+- PostgreSQL
+- Knex.js (query builder)
+- BullMQ (for background jobs like email notifications)
+- JWT Authentication
+
+---
+
+## 🚀 Getting Started
+
+Follow these steps to set up the project locally:
+
+### 1️⃣ **Clone the Repository**
+```bash
+git clone https://github.com/your-username/inventory-management-system.git
+cd inventory-management-system

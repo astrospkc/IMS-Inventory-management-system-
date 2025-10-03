@@ -1,5 +1,5 @@
 ###
-(website_url)[https://ims-inventory-management-system-five.vercel.app/]
+[website](https://ims-inventory-management-system-five.vercel.app/)
 
 # 📦 Inventory Management System
 

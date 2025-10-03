@@ -1,9 +1,14 @@
+###
+(website_url)[https://ims-inventory-management-system-five.vercel.app/]
+
 # 📦 Inventory Management System
 
 An advanced **Inventory Management System** built with **React**, **Tailwind CSS**, **React Query**, **Recharts**, and a **Node.js + mongodb, express backend**.  
 This system helps sellers manage their products efficiently with **charts**, **search**, **add/edit/delete functionality**, and **paginated product lists**, all wrapped in a modern, responsive UI.
 
 ---
+
+
 
 ## 📝 Description
 

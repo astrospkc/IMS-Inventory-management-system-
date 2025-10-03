@@ -1,6 +1,6 @@
 # 📦 Inventory Management System
 
-An advanced **Inventory Management System** built with **React**, **Tailwind CSS**, **React Query**, **Recharts**, and a **Node.js + PostgreSQL backend**.  
+An advanced **Inventory Management System** built with **React**, **Tailwind CSS**, **React Query**, **Recharts**, and a **Node.js + mongodb, express backend**.  
 This system helps sellers manage their products efficiently with **charts**, **search**, **add/edit/delete functionality**, and **paginated product lists**, all wrapped in a modern, responsive UI.
 
 ---
@@ -57,9 +57,7 @@ The dashboard provides insights like **category-wise stock distribution**, **pri
 
 ### **Backend**
 - Node.js / Express.js
-- PostgreSQL
-- Knex.js (query builder)
-- BullMQ (for background jobs like email notifications)
+- mongodb
 - JWT Authentication
 
 ---
@@ -70,5 +68,14 @@ Follow these steps to set up the project locally:
 
 ### 1️⃣ **Clone the Repository**
 ```bash
-git clone https://github.com/your-username/inventory-management-system.git
+git clone https://github.com/astrospkc/IMS-Inventory-management-system-.git
 cd inventory-management-system
+
+### 1️⃣ **Installation guide**
+```bash
+npm install
+
+npm run dev
+
+
+

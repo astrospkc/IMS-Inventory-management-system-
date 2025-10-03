@@ -1,6 +1,9 @@
 ###
 [website](https://ims-inventory-management-system-five.vercel.app/)
 
+<!--  -->
+### Backend repo link
+[Inventory Management System backend repo](https://github.com/astrospkc/ims-backend)
 # 📦 Inventory Management System
 
 An advanced **Inventory Management System** built with **React**, **Tailwind CSS**, **React Query**, **Recharts**, and a **Node.js + mongodb, express backend**.  

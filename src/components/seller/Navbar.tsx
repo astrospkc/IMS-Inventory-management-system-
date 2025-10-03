@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { House } from "lucide-react";
 
 const Navbar = () => {
     const { isAuthenticate, setIsAuthenticate } = useUserStore();
@@ -38,6 +39,11 @@ const Navbar = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [lastScrollY]);
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        setIsAuthenticate(false);
+    }
+
     return (
         <nav
             className={`fixed top-0   left-0 w-full z-50 transition-all duration-300 ${isScrolledUp
@@ -45,9 +51,19 @@ const Navbar = () => {
                 : "bg-transparent"
                 }`}
         >
-            <div className="max-w-7xl mx-auto flex justify-end items-center p-4 ">
+            <div className="w-full mx-auto flex justify-between items-center p-4 ">
+                <Link to="/">
+                    <House className=" left-8 text-white text-3xl" />
+
+                </Link>
                 <ul className="flex space-x-6 text-lg font-medium">
-                    <Link to="/products">
+                    <Link to="/sellerDashboard">
+
+                        <li onClick={DialogDemo} className="cursor-pointer hover:text-gray-300 transition">
+                            Dashboard
+                        </li>
+                    </Link>
+                    <Link to="/sellerDashboard/products">
 
                         <li onClick={DialogDemo} className="cursor-pointer hover:text-gray-300 transition">
                             Products List
@@ -57,7 +73,7 @@ const Navbar = () => {
                     {isAuthenticate ? (
                         <li
                             className="cursor-pointer hover:text-gray-300 transition"
-                            onClick={() => setIsAuthenticate(false)}
+                            onClick={handleLogout}
                         >
                             Logout
                         </li>

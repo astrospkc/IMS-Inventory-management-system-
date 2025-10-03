@@ -1,14 +1,17 @@
 "use client";
 import { House } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import useUserStore from "../store/useUserStore.js"
+import useUserStore from "../store/useUserStore.ts"
 import { useNavigate } from "react-router-dom"
+import axios from "axios";
 // import { useRouter } from "next/navigation";
 
 export default function GetStartedPage() {
     const [chooseOption, setChooseOption] = useState("signin");
-    //  if the user is already logged in , it will directed to the dashboard of the inventory page
+    //  if the user is already logged in , it will directed to the
+    //  dashboard of the inventory page
+
     return (
         <>
             <div style={{
@@ -27,8 +30,6 @@ export default function GetStartedPage() {
                     }}
 
                 >
-
-
                     {chooseOption === "signin" ? (
                         <Login setChooseOption={setChooseOption} />
                     ) : (
@@ -45,7 +46,8 @@ export default function GetStartedPage() {
 const Login = ({ setChooseOption }: { setChooseOption: (opt: string) => void }) => {
     // const router = useRouter();
     const navigate = useNavigate()
-    const { loginUser } = useUserStore()
+    const { isAuthenticate, setIsAuthenticate } = useUserStore()
+    const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -53,32 +55,54 @@ const Login = ({ setChooseOption }: { setChooseOption: (opt: string) => void }) 
     });
 
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.FormEvent) => {
+        const target = e.target as HTMLInputElement;
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [target.name]: target.value
         });
     };
 
     const handleLogin = async (e: React.FormEvent) => {
+        setLoading(true)
         e.preventDefault();
-        const data = await loginUser(formData)
-        console.log("login data: ", data);
-        if (data) {
+        const res = await axios.post(
+            `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        console.log("res: ", res);
+
+        const user_data = res.data;
+        console.log(user_data);
+        localStorage.setItem("token", user_data.authtoken);
+        setIsAuthenticate(true)
+        setLoading(false)
+
+        if (user_data) {
             navigate(formData.role == "seller" ? "/sellerDashboard" : "buyerDashboard")
 
         }
         // router.push("/dashboard"); // redirect after login success
     };
+    console.log("isAuthenticateL ", isAuthenticate)
+
 
     return (
         <>
+            {loading && (
+                <div className="flex justify-center items-center mb-4">
+                    <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            )}
             <h1 className="text-3xl md:text-6xl font-bold mb-6 text-center">
                 Login to Your Account
             </h1>
-            <p className="text-gray-300 text-lg mb-12 text-center max-w-2xl">
-                Login today to start managing your weekly recurring slots with ease.
-            </p>
+
 
             <form
                 onSubmit={handleLogin}
@@ -144,8 +168,9 @@ const Login = ({ setChooseOption }: { setChooseOption: (opt: string) => void }) 
 // ---------- SIGNUP COMPONENT ----------
 const Signup = ({ setChooseOption }: { setChooseOption: (opt: string) => void }) => {
 
-    const { createUser } = useUserStore()
+    const { setIsAuthenticate } = useUserStore()
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
 
     const [formData, setFormData] = useState({
         name: '',
@@ -154,16 +179,26 @@ const Signup = ({ setChooseOption }: { setChooseOption: (opt: string) => void })
         role: 'seller'
     });
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.FormEvent) => {
+        const target = e.target as HTMLInputElement;
+
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [target.name]: target.value
         });
     }
     const handleSignup = async (e: React.FormEvent) => {
+        setLoading(true)
         e.preventDefault();
-        await createUser(formData)
+        const res = await axios.post(
+            `${import.meta.env.VITE_BACKEND_URL}/api/auth/createuser`,
+            formData
+        );
+        const user_data = res.data;
+        localStorage.setItem("token", user_data.authtoken);
+        setIsAuthenticate(true)
         setChooseOption("signin");// after signup, go to login
+        setLoading(false)
         navigate(formData.role == "seller" ? "/sellerDashboard" : "/buyerDashboard")
 
     };
@@ -171,6 +206,11 @@ const Signup = ({ setChooseOption }: { setChooseOption: (opt: string) => void })
 
     return (
         <>
+            {loading && (
+                <div className="flex justify-center items-center mb-4">
+                    <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            )}
             <h1 className="text-5xl md:text-6xl font-bold mb-6 text-center">
                 Create Your Free Account
             </h1>

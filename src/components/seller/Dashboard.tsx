@@ -1,5 +1,6 @@
+
 import { useEffect } from "react";
-import useProductStore from "../../store/useProductStore.js";
+import useProductStore from "../../store/useProductStore.ts";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -72,7 +73,7 @@ const SellerDashboard = () => {
 
     // Prepare data for charts
     const categoryData = Object.values(
-        products.reduce((acc: any, product: Product) => {
+        products.reduce((acc: { [key: string]: { category: string; stock: number } }, product: Product) => {
             if (!acc[product.category]) {
                 acc[product.category] = { category: product.category, stock: 0 };
             }
@@ -81,7 +82,7 @@ const SellerDashboard = () => {
         }, {})
     );
 
-    const priceData = products.map((p) => ({
+    const priceData = products.map((p: Product) => ({
         name: p.name,
         price: p.price,
     }));
@@ -114,7 +115,7 @@ const SellerDashboard = () => {
             }}
         >
             <Navbar />
-            <h1 className="text-6xl font-bold mb-6 text-center my-4">
+            <h1 className="text-4xl md:text-7xl font-bold mb-6 text-center my-4">
                 🛍️ Seller Dashboard
             </h1>
 

@@ -4,9 +4,10 @@ import { motion } from "framer-motion";
 import { BarChart2, PieChart, Package, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
+import useUserStore from "../store/useUserStore.js"
 export default function LandingPage() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const { isAuthenticate } = useUserStore()
 
     return (
         <div
@@ -88,7 +89,7 @@ export default function LandingPage() {
                     Track, manage, and analyze your stock with powerful tools & insights.
                 </motion.p>
                 {/* when user is logged in this button won't show up */}
-                <Link to="/getStarted">
+                {isAuthenticate ? <Link to="/sellerDashboard">
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -96,7 +97,17 @@ export default function LandingPage() {
                     >
                         Get Started
                     </motion.button>
-                </Link>
+                </Link> :
+                    <Link to="/getStarted">
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="px-6 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-lg font-medium"
+                        >
+                            Get Started
+                        </motion.button>
+                    </Link>
+                }
 
             </section>
 

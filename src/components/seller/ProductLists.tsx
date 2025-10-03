@@ -1,13 +1,41 @@
+
 import { useState, useMemo, useEffect } from "react";
-import useProductStore from "../../store/useProductStore.js";
+import useProductStore from "../../store/useProductStore.ts";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import axios from "axios";
+import {
+    Alert,
+    AlertTitle,
+} from "@/components/ui/alert"
+import Navbar from "../../components/seller/Navbar.tsx"
+
+type Product = {
+    _id: string;
+    name: string;
+    description: string;
+    price: number;
+    brand: string;
+    category: string;
+    availability: string;
+    stock: number;
+};
+
+
 
 const ProductLists = () => {
+
     const { products, setProducts } = useProductStore();
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editProduct, setEditProduct] = useState(null);
+    const [editProduct, setEditProduct] = useState({
+        name: "",
+        description: "",
+        price: 0,
+        brand: "",
+        category: "",
+        availability: "",
+        stock: 0,
+    });
     const [productDetails, setProductDetails] = useState({
         name: "",
         description: "",
@@ -18,18 +46,34 @@ const ProductLists = () => {
         stock: 0,
     })
 
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products/getAllProducts`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                });
+                setProducts(data);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        };
+
+        fetchProducts();
+    }, [setProducts]);
 
     // 🔍 Filtered products
     const filteredProducts = useMemo(() => {
         return products.filter(
-            (p) =>
+            (p: Product) =>
                 p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 p.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 p.brand.toLowerCase().includes(searchTerm.toLowerCase())
         );
     }, [products, searchTerm]);
 
-    const handleProductDetails = (e) => {
+    const handleProductDetails = (e: React.ChangeEvent<HTMLInputElement>) => {
         setProductDetails({
             ...productDetails,
             [e.target.name]: e.target.value
@@ -38,7 +82,15 @@ const ProductLists = () => {
 
     // 🧭 Add New Product
     const handleAddProduct = async () => {
-        setEditProduct(null);
+        setEditProduct({
+            name: "",
+            description: "",
+            price: 0,
+            brand: "",
+            category: "",
+            availability: "",
+            stock: 0,
+        });
         setIsModalOpen(true);
 
 
@@ -51,21 +103,41 @@ const ProductLists = () => {
             },
         });
         setProducts([...products, addNewProduct.data]);
-        setEditProduct(null);
+        setEditProduct({
+            name: "",
+            description: "",
+            price: 0,
+            brand: "",
+            category: "",
+            availability: "",
+            stock: 0,
+        });
         setIsModalOpen(true);
     }
 
 
     // ✏️ Edit Product
-    const handleEditProduct = (product) => {
+    const handleEditProduct = (product: Product) => {
         setEditProduct(product);
         setIsModalOpen(true);
     };
 
     // 🗑️ Delete Product
-    const handleDeleteProduct = (productId) => {
-        const updatedProducts = products.filter((p) => p._id !== productId);
+    const handleDeleteProduct = async (productId: string) => {
+        const updatedProducts = products.filter((p: Product) => p._id !== productId);
+        const deleteProduct = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/products/${productId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+        });
+        console.log("deleteProduct", deleteProduct)
+
         setProducts(updatedProducts);
+        return (
+            <Alert>
+                <AlertTitle>Product Deleted Successfully</AlertTitle>
+            </Alert>
+        )
     };
 
     return (
@@ -76,8 +148,9 @@ const ProductLists = () => {
                     "radial-gradient(circle at center, #1a1a1a 0%, #0f0f0f 100%)",
             }}
         >
+            <Navbar />
             {/* Header Section */}
-            <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+            <div className="flex flex-col  my-10 sm:flex-row justify-between items-center mb-8 gap-4">
                 <h1 className="text-3xl font-bold">📦 Product List</h1>
                 <div className="flex items-center gap-2">
                     <input
@@ -112,7 +185,7 @@ const ProductLists = () => {
                     </thead>
                     <tbody>
                         {filteredProducts.length > 0 ? (
-                            filteredProducts.map((product) => (
+                            filteredProducts.map((product: Product) => (
                                 <tr
                                     key={product._id}
                                     className="border-b border-gray-700 hover:bg-gray-700 transition"
@@ -172,7 +245,7 @@ const ProductLists = () => {
                                 placeholder="Name"
                                 name="name"
                                 onChange={handleProductDetails}
-                                defaultValue={""}
+                                defaultValue={editProduct ? editProduct.name : ""}
                                 className="px-3 py-2 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             <input
@@ -180,7 +253,7 @@ const ProductLists = () => {
                                 placeholder="Category"
                                 name="category"
                                 onChange={handleProductDetails}
-                                defaultValue={""}
+                                defaultValue={editProduct ? editProduct.category : ""}
                                 className="px-3 py-2 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             <input
@@ -188,7 +261,7 @@ const ProductLists = () => {
                                 placeholder="Brand"
                                 name="brand"
                                 onChange={handleProductDetails}
-                                defaultValue={""}
+                                defaultValue={editProduct ? editProduct.brand : ""}
                                 className="px-3 py-2 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             <input
@@ -196,7 +269,7 @@ const ProductLists = () => {
                                 placeholder="Price"
                                 name="price"
                                 onChange={handleProductDetails}
-                                defaultValue={""}
+                                defaultValue={editProduct ? editProduct.price : ""}
                                 className="px-3 py-2 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             <input
@@ -204,7 +277,7 @@ const ProductLists = () => {
                                 placeholder="Stock"
                                 name="stock"
                                 onChange={handleProductDetails}
-                                defaultValue={""}
+                                defaultValue={editProduct ? editProduct.stock : ""}
                                 className="px-3 py-2 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
 
@@ -233,3 +306,4 @@ const ProductLists = () => {
 };
 
 export default ProductLists;
+
